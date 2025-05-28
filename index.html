@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Island Map with City Connections</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+        .info {
+            padding: 6px 8px;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+        .city-marker {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #3388ff;
+            border: 2px solid white;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .city-selector {
+            position: absolute;
+            top: 10px;
+            left: 50px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        .city-selector select {
+            width: 150px;
+            padding: 5px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .city-selector label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    
+    <script>
+        
+        const map = L.map('map').setView([-7.6145, 110.7126], 7);
+
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        
+        const cities = {
+            "Jakarta": { coords: [-6.2088, 106.8456], population: "10.56 million" },
+            "Bandung": { coords: [-6.9175, 107.6191], population: "2.5 million" },
+            "Semarang": { coords: [-6.9667, 110.4167], population: "1.6 million" },
+            "Yogyakarta": { coords: [-7.7956, 110.3695], population: "422 thousand" },
+            "Surabaya": { coords: [-7.2575, 112.7521], population: "2.87 million" },
+            "Serang": { coords: [-6.1200, 106.1503], population: "643 thousand" },
+            "Bogor": { coords: [-6.5971, 106.8060], population: "1.1 million" },
+            "Cirebon": { coords: [-6.7320, 108.5523], population: "296 thousand" },
+            "Tasikmalaya": { coords: [-7.3506, 108.2170], population: "733 thousand" },
+            "Purwokerto": { coords: [-7.4314, 109.2479], population: "292 thousand" },
+            "Brebes": { coords: [-6.8700, 109.0400], population: "1.8 million (regency)" },
+            "Solo (Surakarta)": { coords: [-7.5755, 110.8243], population: "522 thousand" },
+            "Magelang": { coords: [-7.47056, 110.21778], population: "128 thousand" },
+            "Probolinggo": { coords: [-7.7764, 113.2037], population: "223 thousand" },
+            "Madiun": { coords: [-7.6298, 111.5239], population: "170 thousand" },
+            "Malang": { coords: [-7.9666, 112.6326], population: "843 thousand" },
+            "Banyuwangi": { coords: [-8.2191, 114.3691], population: "117 thousand" },
+            "Jember": { coords: [-8.1724, 113.7000], population: "332 thousand" },
+            "Kediri": { coords: [-7.8166, 112.0115], population: "286 thousand" }
+        };
+
+        
+        Object.entries(cities).forEach(([name, data]) => {
+            L.circleMarker(data.coords, {
+                radius: 8,
+                fillColor: "#3388ff",
+                color: "#fff",
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map)
+            .bindPopup(`<b>${name}</b><br>Population: ${data.population}`);
+        });
+
+
+        const roadConnections = [
+            
+            { from: "Jakarta", to: "Serang", color: "#e63946" },
+            { from: "Jakarta", to: "Bogor", color: "#e63946" },
+            { from: "Jakarta", to: "Cirebon", color: "#e63946" },
+            { from: "Jakarta", to: "Bandung", color: "#e63946" },
+            { from: "Bogor", to: "Bandung", color: "#e63946" },
+            { from: "Bandung", to: "Tasikmalaya", color: "#e63946" },
+            { from: "Bandung", to: "Cirebon", color: "#e63946" },
+            { from: "Tasikmalaya", to: "Purwokerto", color: "#e63946" },
+            
+            { from: "Cirebon", to: "Brebes", color: "#2a9d8f" },
+            { from: "Brebes", to: "Semarang", color: "#2a9d8f" },
+            { from: "Brebes", to: "Purwokerto", color: "#2a9d8f" },
+            { from: "Semarang", to: "Purwokerto", color: "#2a9d8f" },
+            { from: "Semarang", to: "Solo (Surakarta)", color: "#2a9d8f" },
+            { from: "Semarang", to: "Surabaya", color: "#2a9d8f" },
+            { from: "Semarang", to: "Magelang", color: "#2a9d8f" },
+            { from: "Magelang", to: "Yogyakarta", color: "#2a9d8f" },
+            { from: "Purwokerto", to: "Yogyakarta", color: "#2a9d8f" },
+            { from: "Yogyakarta", to: "Solo (Surakarta)", color: "#2a9d8f" },
+
+            { from: "Solo (Surakarta)", to: "Madiun", color: "#f4a261" },
+            { from: "Madiun", to: "Kediri", color: "#f4a261" },
+            { from: "Kediri", to: "Malang", color: "#f4a261" },
+            { from: "Madiun", to: "Surabaya", color: "#f4a261" },
+            { from: "Kediri", to: "Surabaya", color: "#f4a261" },
+            { from: "Malang", to: "Jember", color: "#f4a261" },
+            { from: "Jember", to: "Banyuwangi", color: "#f4a261" },
+            { from: "Surabaya", to: "Probolinggo", color: "#f4a261" },
+            { from: "Surabaya", to: "Malang", color: "#f4a261" },
+            { from: "Probolinggo", to: "Jember", color: "#f4a261" },
+            { from: "Probolinggo", to: "Banyuwangi", color: "#f4a261" }
+        ];
+
+        roadConnections.forEach(road => {
+            const fromCoords = cities[road.from].coords;
+            const toCoords = cities[road.to].coords;
+            
+            const distance = map.distance(fromCoords, toCoords) / 1000;
+            
+            L.polyline([fromCoords, toCoords], {
+                color: road.color,
+                weight: 3,
+                opacity: 0.7,
+                dashArray: '0'
+            }).addTo(map)
+            .bindPopup(`<b>${road.from} ↔ ${road.to}</b><br>Distance: ${distance.toFixed(0)} km`);
+        });
+
+        L.control.scale().addTo(map);
+
+        const legend = L.control({position: 'bottomright'});
+        legend.onAdd = function(map) {
+            const div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML = `
+                <h4>Java Island Connections</h4>
+                <div class="city-marker"></div> Cities<br><br>
+                <div style="background:#e63946; width: 20px; height: 5px; display: inline-block; margin-right: 8px;"></div> West Java Connections<br>
+                <div style="background:#2a9d8f; width: 20px; height: 5px; display: inline-block; margin-right: 8px;"></div> Central Java Connections<br>
+                <div style="background:#f4a261; width: 20px; height: 5px; display: inline-block; margin-right: 8px;"></div> East Java Connections
+            `;
+            return div;
+        };
+        legend.addTo(map);
+
+        const citySelector = L.control({position: 'topleft'});
+        citySelector.onAdd = function(map) {
+            const div = L.DomUtil.create('div', 'info city-selector');
+            div.innerHTML = `
+                <h4>Select Route</h4>
+                <label for="startCity">Start City:</label><br>
+                <select id="startCity">
+                    <option value="">Select a city</option>
+                    ${Object.keys(cities).map(city => `<option value="${city}">${city}</option>`).join('')}
+                </select><br>
+                <label for="endCity">End City:</label><br>
+                <select id="endCity">
+                    <option value="">Select a city</option>
+                    ${Object.keys(cities).map(city => `<option value="${city}">${city}</option>`).join('')}
+                </select>
+            `;
+            return div;
+        };
+        citySelector.addTo(map);
+
+        const cityCoords = Object.values(cities).map(city => city.coords);
+        map.fitBounds(L.latLngBounds(cityCoords).pad(0.1));
+    </script>
+</body>
+</html>
