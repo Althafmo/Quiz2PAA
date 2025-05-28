@@ -58,6 +58,29 @@
             font-weight: bold;
             margin-right: 10px;
         }
+        .city-selector button {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: #3388ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .city-selector button:hover {
+            background: #2a6acc;
+        }
+        .path-info {
+            position: absolute;
+            top: 150px;
+            left: 50px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            max-width: 300px;
+        }
     </style>
 </head>
 <body>
@@ -68,15 +91,12 @@
             crossorigin=""></script>
     
     <script>
-        
         const map = L.map('map').setView([-7.6145, 110.7126], 7);
 
-        
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        
         const cities = {
             "Jakarta": { coords: [-6.2088, 106.8456], population: "10.56 million" },
             "Bandung": { coords: [-6.9175, 107.6191], population: "2.5 million" },
@@ -99,7 +119,6 @@
             "Kediri": { coords: [-7.8166, 112.0115], population: "286 thousand" }
         };
 
-        
         Object.entries(cities).forEach(([name, data]) => {
             L.circleMarker(data.coords, {
                 radius: 8,
@@ -112,55 +131,48 @@
             .bindPopup(`<b>${name}</b><br>Population: ${data.population}`);
         });
 
-
         const roadConnections = [
-            
-            { from: "Jakarta", to: "Serang", color: "#e63946" },
-            { from: "Jakarta", to: "Bogor", color: "#e63946" },
-            { from: "Jakarta", to: "Cirebon", color: "#e63946" },
-            { from: "Jakarta", to: "Bandung", color: "#e63946" },
-            { from: "Bogor", to: "Bandung", color: "#e63946" },
-            { from: "Bandung", to: "Tasikmalaya", color: "#e63946" },
-            { from: "Bandung", to: "Cirebon", color: "#e63946" },
-            { from: "Tasikmalaya", to: "Purwokerto", color: "#e63946" },
-            
-            { from: "Cirebon", to: "Brebes", color: "#2a9d8f" },
-            { from: "Brebes", to: "Semarang", color: "#2a9d8f" },
-            { from: "Brebes", to: "Purwokerto", color: "#2a9d8f" },
-            { from: "Semarang", to: "Purwokerto", color: "#2a9d8f" },
-            { from: "Semarang", to: "Solo (Surakarta)", color: "#2a9d8f" },
-            { from: "Semarang", to: "Surabaya", color: "#2a9d8f" },
-            { from: "Semarang", to: "Magelang", color: "#2a9d8f" },
-            { from: "Magelang", to: "Yogyakarta", color: "#2a9d8f" },
-            { from: "Purwokerto", to: "Yogyakarta", color: "#2a9d8f" },
-            { from: "Yogyakarta", to: "Solo (Surakarta)", color: "#2a9d8f" },
-
-            { from: "Solo (Surakarta)", to: "Madiun", color: "#f4a261" },
-            { from: "Madiun", to: "Kediri", color: "#f4a261" },
-            { from: "Kediri", to: "Malang", color: "#f4a261" },
-            { from: "Madiun", to: "Surabaya", color: "#f4a261" },
-            { from: "Kediri", to: "Surabaya", color: "#f4a261" },
-            { from: "Malang", to: "Jember", color: "#f4a261" },
-            { from: "Jember", to: "Banyuwangi", color: "#f4a261" },
-            { from: "Surabaya", to: "Probolinggo", color: "#f4a261" },
-            { from: "Surabaya", to: "Malang", color: "#f4a261" },
-            { from: "Probolinggo", to: "Jember", color: "#f4a261" },
-            { from: "Probolinggo", to: "Banyuwangi", color: "#f4a261" }
+            { from: "Jakarta", to: "Serang", color: "#e63946", distance: 82.6 },
+            { from: "Jakarta", to: "Bogor", color: "#e63946", distance: 56.5 },
+            { from: "Jakarta", to: "Cirebon", color: "#e63946", distance: 219 },
+            { from: "Jakarta", to: "Bandung", color: "#e63946", distance: 150 }, // Corrected from 252 km
+            { from: "Bandung", to: "Tasikmalaya", color: "#e63946", distance: 116 },
+            { from: "Bandung", to: "Cirebon", color: "#e63946", distance: 141 },
+            { from: "Tasikmalaya", to: "Purwokerto", color: "#e63946", distance: 143 },
+            { from: "Cirebon", to: "Brebes", color: "#2a9d8f", distance: 60.2 },
+            { from: "Brebes", to: "Semarang", color: "#2a9d8f", distance: 189 },
+            { from: "Brebes", to: "Purwokerto", color: "#2a9d8f", distance: 87.5 },
+            { from: "Semarang", to: "Purwokerto", color: "#2a9d8f", distance: 207 },
+            { from: "Semarang", to: "Solo (Surakarta)", color: "#2a9d8f", distance: 106 },
+            { from: "Semarang", to: "Magelang", color: "#2a9d8f", distance: 83.9 },
+            { from: "Magelang", to: "Yogyakarta", color: "#2a9d8f", distance: 44.6 },
+            { from: "Purwokerto", to: "Yogyakarta", color: "#2a9d8f", distance: 165 },
+            { from: "Yogyakarta", to: "Solo (Surakarta)", color: "#2a9d8f", distance: 80 },
+            { from: "Solo (Surakarta)", to: "Madiun", color: "#f4a261", distance: 115 },
+            { from: "Madiun", to: "Kediri", color: "#f4a261", distance: 94.9 },
+            { from: "Kediri", to: "Malang", color: "#f4a261", distance: 103 },
+            { from: "Madiun", to: "Surabaya", color: "#f4a261", distance: 165 },
+            { from: "Kediri", to: "Surabaya", color: "#f4a261", distance: 124 },
+            { from: "Malang", to: "Jember", color: "#f4a261", distance: 157 },
+            { from: "Jember", to: "Banyuwangi", color: "#f4a261", distance: 103 },
+            { from: "Surabaya", to: "Probolinggo", color: "#f4a261", distance: 112 },
+            { from: "Surabaya", to: "Malang", color: "#f4a261", distance: 100 },
+            { from: "Probolinggo", to: "Jember", color: "#f4a261", distance: 96.1 },
+            { from: "Probolinggo", to: "Banyuwangi", color: "#f4a261", distance: 196 }
         ];
+
+        const pathLayerGroup = L.layerGroup().addTo(map);
 
         roadConnections.forEach(road => {
             const fromCoords = cities[road.from].coords;
             const toCoords = cities[road.to].coords;
-            
-            const distance = map.distance(fromCoords, toCoords) / 1000;
-            
             L.polyline([fromCoords, toCoords], {
                 color: road.color,
                 weight: 3,
                 opacity: 0.7,
                 dashArray: '0'
             }).addTo(map)
-            .bindPopup(`<b>${road.from} ↔ ${road.to}</b><br>Distance: ${distance.toFixed(0)} km`);
+            .bindPopup(`<b>${road.from} ↔ ${road.to}</b><br>Distance: ${road.distance.toFixed(1)} km`);
         });
 
         L.control.scale().addTo(map);
@@ -173,7 +185,8 @@
                 <div class="city-marker"></div> Cities<br><br>
                 <div style="background:#e63946; width: 20px; height: 5px; display: inline-block; margin-right: 8px;"></div> West Java Connections<br>
                 <div style="background:#2a9d8f; width: 20px; height: 5px; display: inline-block; margin-right: 8px;"></div> Central Java Connections<br>
-                <div style="background:#f4a261; width: 20px; height: 5px; display: inline-block; margin-right: 8px;"></div> East Java Connections
+                <div style="background:#f4a261; width: 20px; height: 5px; display: inline-block; margin-right: 8px;"></div> East Java Connections<br>
+                <div style="background:#ff0000; width: 20px; height: 5px; display: inline-block; margin-right: 8px;"></div> Suggested Route
             `;
             return div;
         };
@@ -193,11 +206,147 @@
                 <select id="endCity">
                     <option value="">Select a city</option>
                     ${Object.keys(cities).map(city => `<option value="${city}">${city}</option>`).join('')}
-                </select>
+                </select><br>
+                <button onclick="findShortestPath()">Find Route</button>
             `;
             return div;
         };
         citySelector.addTo(map);
+
+        const pathInfoControl = L.control({position: 'topleft'});
+        pathInfoControl.onAdd = function(map) {
+            const div = L.DomUtil.create('div', 'info path-info');
+            div.id = 'pathInfo';
+            div.innerHTML = `<h4>Route Details</h4><p>Select cities to see the shortest path.</p>`;
+            return div;
+        };
+        pathInfoControl.addTo(map);
+
+        function dijkstra(graph, start, end) {
+            const distances = {};
+            const previous = {};
+            const unvisited = new Set(Object.keys(graph));
+            const path = [];
+
+            Object.keys(graph).forEach(city => {
+                distances[city] = Infinity;
+                previous[city] = null;
+            });
+            distances[start] = 0;
+
+            while (unvisited.size > 0) {
+                let current = null;
+                let minDistance = Infinity;
+                unvisited.forEach(city => {
+                    if (distances[city] < minDistance) {
+                        minDistance = distances[city];
+                        current = city;
+                    }
+                });
+
+                if (current === null) break;
+                if (current === end) {
+                    let node = end;
+                    while (node !== null) {
+                        path.unshift(node);
+                        node = previous[node];
+                    }
+                    break;
+                }
+
+                unvisited.delete(current);
+
+                graph[current].forEach(neighbor => {
+                    const alt = distances[current] + neighbor.distance;
+                    if (alt < distances[neighbor.city]) {
+                        distances[neighbor.city] = alt;
+                        previous[neighbor.city] = current;
+                    }
+                });
+            }
+
+            return { path, distance: distances[end] };
+        }
+
+        function createGraph() {
+            const graph = {};
+            Object.keys(cities).forEach(city => {
+                graph[city] = [];
+            });
+            roadConnections.forEach(road => {
+                graph[road.from].push({ city: road.to, distance: road.distance });
+                graph[road.to].push({ city: road.from, distance: road.distance });
+            });
+            return graph;
+        }
+
+        function findSegmentDistance(fromCity, toCity) {
+            const road = roadConnections.find(
+                r => (r.from === fromCity && r.to === toCity) || (r.from === toCity && r.to === fromCity)
+            );
+            return road ? road.distance : null;
+        }
+
+        function findShortestPath() {
+            const startCity = document.getElementById('startCity').value;
+            const endCity = document.getElementById('endCity').value;
+
+            if (!startCity || !endCity || startCity === endCity) {
+                alert('Please select different start and end cities.');
+                document.getElementById('pathInfo').innerHTML = `<h4>Route Details</h4><p>Please select different start and end cities.</p>`;
+                pathLayerGroup.clearLayers();
+                return;
+            }
+
+            pathLayerGroup.clearLayers();
+
+            const graph = createGraph();
+            const { path, distance } = dijkstra(graph, startCity, endCity);
+
+            if (distance === Infinity) {
+                alert('No path exists between the selected cities.');
+                document.getElementById('pathInfo').innerHTML = `<h4>Route Details</h4><p>No path exists between ${startCity} and ${endCity}.</p>`;
+                return;
+            }
+
+            const segmentDetails = [];
+            let totalDistance = 0;
+            for (let i = 0; i < path.length - 1; i++) {
+                const fromCity = path[i];
+                const toCity = path[i + 1];
+                const fromCoords = cities[fromCity].coords;
+                const toCoords = cities[toCity].coords;
+                const segmentDistance = findSegmentDistance(fromCity, toCity);
+                totalDistance += segmentDistance;
+
+                L.polyline([fromCoords, toCoords], {
+                    color: '#ff0000',
+                    weight: 5,
+                    opacity: 0.9
+                }).addTo(pathLayerGroup)
+                .bindPopup(`<b>${fromCity} ↔ ${toCity}</b><br>Distance: ${segmentDistance.toFixed(1)} km`);
+
+                segmentDetails.push(`${fromCity} → ${toCity}: ${segmentDistance.toFixed(1)} km`);
+            }
+
+            const pathString = path.join(' → ');
+            const popupContent = `<b>Shortest Path</b><br>${pathString}<br>Total Distance: ${totalDistance.toFixed(1)} km`;
+            L.popup()
+                .setLatLng(cities[endCity].coords)
+                .setContent(popupContent)
+                .openOn(map);
+
+            const pathInfoContent = `
+                <h4>Route Details</h4>
+                <p><b>Path:</b> ${pathString}</p>
+                <p><b>Segments:</b></p>
+                <ul>
+                    ${segmentDetails.map(detail => `<li>${detail}</li>`).join('')}
+                </ul>
+                <p><b>Total Distance:</b> ${totalDistance.toFixed(1)} km</p>
+            `;
+            document.getElementById('pathInfo').innerHTML = pathInfoContent;
+        }
 
         const cityCoords = Object.values(cities).map(city => city.coords);
         map.fitBounds(L.latLngBounds(cityCoords).pad(0.1));
