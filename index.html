@@ -72,8 +72,8 @@
         }
         .path-info {
             position: absolute;
-            top: 150px;
-            left: 50px;
+            top: 10px;
+            right: 50px; /* Changed from left to right */
             z-index: 1000;
             background: rgba(255,255,255,0.9);
             padding: 10px;
@@ -97,27 +97,34 @@
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        const cities = {
-            "Jakarta": { coords: [-6.2088, 106.8456], population: "10.56 million" },
-            "Bandung": { coords: [-6.9175, 107.6191], population: "2.5 million" },
-            "Semarang": { coords: [-6.9667, 110.4167], population: "1.6 million" },
-            "Yogyakarta": { coords: [-7.7956, 110.3695], population: "422 thousand" },
-            "Surabaya": { coords: [-7.2575, 112.7521], population: "2.87 million" },
-            "Serang": { coords: [-6.1200, 106.1503], population: "643 thousand" },
-            "Bogor": { coords: [-6.5971, 106.8060], population: "1.1 million" },
-            "Cirebon": { coords: [-6.7320, 108.5523], population: "296 thousand" },
-            "Tasikmalaya": { coords: [-7.3506, 108.2170], population: "733 thousand" },
-            "Purwokerto": { coords: [-7.4314, 109.2479], population: "292 thousand" },
-            "Brebes": { coords: [-6.8700, 109.0400], population: "1.8 million (regency)" },
-            "Solo (Surakarta)": { coords: [-7.5755, 110.8243], population: "522 thousand" },
-            "Magelang": { coords: [-7.47056, 110.21778], population: "128 thousand" },
-            "Probolinggo": { coords: [-7.7764, 113.2037], population: "223 thousand" },
-            "Madiun": { coords: [-7.6298, 111.5239], population: "170 thousand" },
-            "Malang": { coords: [-7.9666, 112.6326], population: "843 thousand" },
-            "Banyuwangi": { coords: [-8.2191, 114.3691], population: "117 thousand" },
-            "Jember": { coords: [-8.1724, 113.7000], population: "332 thousand" },
-            "Kediri": { coords: [-7.8166, 112.0115], population: "286 thousand" }
-        };
+    const cities = {
+    "Jakarta": { coords: [-6.2088, 106.8456], population: "10.56 million" },
+    "Bandung": { coords: [-6.9175, 107.6191], population: "2.5 million" },
+    "Semarang": { coords: [-6.9667, 110.4167], population: "1.6 million" },
+    "Yogyakarta": { coords: [-7.7956, 110.3695], population: "422 thousand" },
+    "Surabaya": { coords: [-7.2575, 112.7521], population: "2.87 million" },
+    "Serang": { coords: [-6.1200, 106.1503], population: "643 thousand" },
+    "Bogor": { coords: [-6.5971, 106.8060], population: "1.1 million" },
+    "Cirebon": { coords: [-6.7320, 108.5523], population: "296 thousand" },
+    "Tasikmalaya": { coords: [-7.3506, 108.2170], population: "733 thousand" },
+    "Purwokerto": { coords: [-7.4314, 109.2479], population: "292 thousand" },
+    "Brebes": { coords: [-6.8700, 109.0400], population: "1.8 million (regency)" },
+    "Solo (Surakarta)": { coords: [-7.5755, 110.8243], population: "522 thousand" },
+    "Magelang": { coords: [-7.47056, 110.21778], population: "128 thousand" },
+    "Probolinggo": { coords: [-7.7764, 113.2037], population: "223 thousand" },
+    "Madiun": { coords: [-7.6298, 111.5239], population: "170 thousand" },
+    "Malang": { coords: [-7.9666, 112.6326], population: "843 thousand" },
+    "Banyuwangi": { coords: [-8.2191, 114.3691], population: "117 thousand" },
+    "Jember": { coords: [-8.1724, 113.7000], population: "332 thousand" },
+    "Kediri": { coords: [-7.8166, 112.0115], population: "286 thousand" },
+    "Ngawi": { coords: [-7.4037, 111.4461], population: "82 thousand" },
+    "Bojonegoro": { coords: [-7.1502, 111.8860], population: "110 thousand" },
+    "Cilegon": { coords: [-6.0027, 106.0112], population: "416 thousand" },
+    "Sukabumi": { coords: [-6.9197, 106.9267], population: "320 thousand" },
+    "Cianjur": { coords: [-6.8222, 107.1395], population: "174 thousand" },
+    "Rangkasbitung": { coords: [-6.3591, 106.2491], population: "137 thousand" },
+    "Cikampek": { coords: [-6.4197, 107.4559], population: "110 thousand" } // New: Approx. coords and population
+};
 
         Object.entries(cities).forEach(([name, data]) => {
             L.circleMarker(data.coords, {
@@ -131,35 +138,49 @@
             .bindPopup(`<b>${name}</b><br>Population: ${data.population}`);
         });
 
-        const roadConnections = [
-            { from: "Jakarta", to: "Serang", color: "#e63946", distance: 82.6 },
-            { from: "Jakarta", to: "Bogor", color: "#e63946", distance: 56.5 },
-            { from: "Jakarta", to: "Cirebon", color: "#e63946", distance: 219 },
-            { from: "Jakarta", to: "Bandung", color: "#e63946", distance: 150 }, // Corrected from 252 km
-            { from: "Bandung", to: "Tasikmalaya", color: "#e63946", distance: 116 },
-            { from: "Bandung", to: "Cirebon", color: "#e63946", distance: 141 },
-            { from: "Tasikmalaya", to: "Purwokerto", color: "#e63946", distance: 143 },
-            { from: "Cirebon", to: "Brebes", color: "#2a9d8f", distance: 60.2 },
-            { from: "Brebes", to: "Semarang", color: "#2a9d8f", distance: 189 },
-            { from: "Brebes", to: "Purwokerto", color: "#2a9d8f", distance: 87.5 },
-            { from: "Semarang", to: "Purwokerto", color: "#2a9d8f", distance: 207 },
-            { from: "Semarang", to: "Solo (Surakarta)", color: "#2a9d8f", distance: 106 },
-            { from: "Semarang", to: "Magelang", color: "#2a9d8f", distance: 83.9 },
-            { from: "Magelang", to: "Yogyakarta", color: "#2a9d8f", distance: 44.6 },
-            { from: "Purwokerto", to: "Yogyakarta", color: "#2a9d8f", distance: 165 },
-            { from: "Yogyakarta", to: "Solo (Surakarta)", color: "#2a9d8f", distance: 80 },
-            { from: "Solo (Surakarta)", to: "Madiun", color: "#f4a261", distance: 115 },
-            { from: "Madiun", to: "Kediri", color: "#f4a261", distance: 94.9 },
-            { from: "Kediri", to: "Malang", color: "#f4a261", distance: 103 },
-            { from: "Madiun", to: "Surabaya", color: "#f4a261", distance: 165 },
-            { from: "Kediri", to: "Surabaya", color: "#f4a261", distance: 124 },
-            { from: "Malang", to: "Jember", color: "#f4a261", distance: 157 },
-            { from: "Jember", to: "Banyuwangi", color: "#f4a261", distance: 103 },
-            { from: "Surabaya", to: "Probolinggo", color: "#f4a261", distance: 112 },
-            { from: "Surabaya", to: "Malang", color: "#f4a261", distance: 100 },
-            { from: "Probolinggo", to: "Jember", color: "#f4a261", distance: 96.1 },
-            { from: "Probolinggo", to: "Banyuwangi", color: "#f4a261", distance: 196 }
-        ];
+    const roadConnections = [
+    { from: "Jakarta", to: "Serang", color: "#e63946", distance: 82.6 },
+    { from: "Jakarta", to: "Bogor", color: "#e63946", distance: 56.5 },
+    { from: "Jakarta", to: "Rangkasbitung", color: "#e63946", distance: 70 },
+    { from: "Jakarta", to: "Cikampek", color: "#e63946", distance: 80 }, // New: Approx. via Jakarta-Cikampek Toll
+    { from: "Bandung", to: "Tasikmalaya", color: "#e63946", distance: 116 },
+    { from: "Bandung", to: "Cirebon", color: "#e63946", distance: 141 },
+    { from: "Bandung", to: "Cianjur", color: "#e63946", distance: 60 },
+    { from: "Bandung", to: "Cikampek", color: "#e63946", distance: 90 }, // New: Approx. via Cipularang Toll
+    { from: "Tasikmalaya", to: "Purwokerto", color: "#e63946", distance: 143 },
+    { from: "Tasikmalaya", to: "Cirebon", color: "#e63946", distance: 108 },
+    { from: "Cirebon", to: "Brebes", color: "#2a9d8f", distance: 60.2 },
+    { from: "Cirebon", to: "Cikampek", color: "#e63946", distance: 140 }, // New: Approx. via Cikopo-Palimanan Toll
+    { from: "Brebes", to: "Semarang", color: "#2a9d8f", distance: 189 },
+    { from: "Brebes", to: "Purwokerto", color: "#2a9d8f", distance: 87.5 },
+    { from: "Magelang", to: "Purwokerto", color: "#2a9d8f", distance: 144 },
+    { from: "Semarang", to: "Solo (Surakarta)", color: "#2a9d8f", distance: 106 },
+    { from: "Semarang", to: "Magelang", color: "#2a9d8f", distance: 83.9 },
+    { from: "Semarang", to: "Bojonegoro", color: "#f4a261", distance: 190 },
+    { from: "Magelang", to: "Yogyakarta", color: "#2a9d8f", distance: 44.6 },
+    { from: "Purwokerto", to: "Yogyakarta", color: "#2a9d8f", distance: 165 },
+    { from: "Yogyakarta", to: "Solo (Surakarta)", color: "#2a9d8f", distance: 80 },
+    { from: "Solo (Surakarta)", to: "Ngawi", color: "#f4a261", distance: 70 },
+    { from: "Ngawi", to: "Madiun", color: "#f4a261", distance: 40 },
+    { from: "Ngawi", to: "Bojonegoro", color: "#f4a261", distance: 60 },
+    { from: "Madiun", to: "Kediri", color: "#f4a261", distance: 94.9 },
+    { from: "Kediri", to: "Malang", color: "#f4a261", distance: 103 },
+    { from: "Madiun", to: "Surabaya", color: "#f4a261", distance: 165 },
+    { from: "Kediri", to: "Surabaya", color: "#f4a261", distance: 124 },
+    { from: "Malang", to: "Jember", color: "#f4a261", distance: 157 },
+    { from: "Jember", to: "Banyuwangi", color: "#f4a261", distance: 103 },
+    { from: "Surabaya", to: "Probolinggo", color: "#f4a261", distance: 112 },
+    { from: "Surabaya", to: "Malang", color: "#f4a261", distance: 100 },
+    { from: "Surabaya", to: "Bojonegoro", color: "#f4a261", distance: 110 },
+    { from: "Probolinggo", to: "Jember", color: "#f4a261", distance: 96.1 },
+    { from: "Probolinggo", to: "Banyuwangi", color: "#f4a261", distance: 196 },
+    { from: "Serang", to: "Cilegon", color: "#e63946", distance: 20 },
+    { from: "Serang", to: "Rangkasbitung", color: "#e63946", distance: 43 },
+    { from: "Rangkasbitung", to: "Bogor", color: "#e63946", distance: 96 },
+    { from: "Bogor", to: "Cianjur", color: "#e63946", distance: 55 },
+    { from: "Bogor", to: "Sukabumi", color: "#e63946", distance: 65 },
+    { from: "Sukabumi", to: "Cianjur", color: "#e63946", distance: 40 }
+];
 
         const pathLayerGroup = L.layerGroup().addTo(map);
 
@@ -176,7 +197,7 @@
         });
 
         L.control.scale().addTo(map);
-
+        /*
         const legend = L.control({position: 'bottomright'});
         legend.onAdd = function(map) {
             const div = L.DomUtil.create('div', 'info legend');
@@ -187,10 +208,11 @@
                 <div style="background:#2a9d8f; width: 20px; height: 5px; display: inline-block; margin-right: 8px;"></div> Central Java Connections<br>
                 <div style="background:#f4a261; width: 20px; height: 5px; display: inline-block; margin-right: 8px;"></div> East Java Connections<br>
                 <div style="background:#ff0000; width: 20px; height: 5px; display: inline-block; margin-right: 8px;"></div> Suggested Route
-            `;
-            return div;
-        };
-        legend.addTo(map);
+                `;
+                return div;
+            };
+            legend.addTo(map);
+            */
 
         const citySelector = L.control({position: 'topleft'});
         citySelector.onAdd = function(map) {
@@ -213,7 +235,7 @@
         };
         citySelector.addTo(map);
 
-        const pathInfoControl = L.control({position: 'topleft'});
+        const pathInfoControl = L.control({position: 'topright'}); // Changed to topright
         pathInfoControl.onAdd = function(map) {
             const div = L.DomUtil.create('div', 'info path-info');
             div.id = 'pathInfo';
