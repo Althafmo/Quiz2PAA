@@ -73,7 +73,7 @@
         .path-info {
             position: absolute;
             top: 10px;
-            right: 50px; /* Changed from left to right */
+            right: 50px;
             z-index: 1000;
             background: rgba(255,255,255,0.9);
             padding: 10px;
@@ -123,7 +123,7 @@
     "Sukabumi": { coords: [-6.9197, 106.9267], population: "320 thousand" },
     "Cianjur": { coords: [-6.8222, 107.1395], population: "174 thousand" },
     "Rangkasbitung": { coords: [-6.3591, 106.2491], population: "137 thousand" },
-    "Cikampek": { coords: [-6.4197, 107.4559], population: "110 thousand" } // New: Approx. coords and population
+    "Cikampek": { coords: [-6.4197, 107.4559], population: "110 thousand" }
 };
 
         Object.entries(cities).forEach(([name, data]) => {
@@ -235,7 +235,7 @@
         };
         citySelector.addTo(map);
 
-        const pathInfoControl = L.control({position: 'topright'}); // Changed to topright
+        const pathInfoControl = L.control({position: 'topright'});
         pathInfoControl.onAdd = function(map) {
             const div = L.DomUtil.create('div', 'info path-info');
             div.id = 'pathInfo';
